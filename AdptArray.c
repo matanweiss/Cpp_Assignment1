@@ -13,6 +13,8 @@ typedef struct AdptArray_
 
 PAdptArray CreateAdptArray(COPY_FUNC c, DEL_FUNC d, PRINT_FUNC p)
 {
+    if (!c || !d || !p)
+        return NULL;
     PAdptArray adptArray = (PAdptArray)malloc(sizeof(struct AdptArray_));
     if (!adptArray)
         return FAIL;
@@ -33,6 +35,13 @@ PAdptArray CreateAdptArray(COPY_FUNC c, DEL_FUNC d, PRINT_FUNC p)
 
 void DeleteAdptArray(PAdptArray adptArray)
 {
+    if (!adptArray)
+        return;
+    if (!adptArray->arr)
+    {
+        free(adptArray);
+        return;
+    }
     for (size_t i = 0; i < adptArray->size; i++)
     {
         PElement element = adptArray->arr[i];
@@ -45,6 +54,8 @@ void DeleteAdptArray(PAdptArray adptArray)
 
 Result SetAdptArrayAt(PAdptArray adptArray, int index, PElement element)
 {
+    if (index < 0 || !adptArray || !element)
+        return FAIL;
     if (index < adptArray->size)
     {
         PElement oldElement = adptArray->arr[index];
@@ -71,7 +82,7 @@ Result SetAdptArrayAt(PAdptArray adptArray, int index, PElement element)
 
 PElement GetAdptArrayAt(PAdptArray adptArray, int index)
 {
-    if (adptArray->size <= index)
+    if (!adptArray || adptArray->size <= index || index < 0)
         return NULL;
     else if (adptArray->arr[index] == NULL)
         return NULL;
@@ -81,11 +92,15 @@ PElement GetAdptArrayAt(PAdptArray adptArray, int index)
 
 int GetAdptArraySize(PAdptArray adptArray)
 {
+    if (!adptArray)
+        return -1;
     return adptArray->size;
 }
 
 void PrintDB(PAdptArray adptArray)
 {
+    if (!adptArray)
+        return;
     for (size_t i = 0; i < adptArray->size; i++)
     {
         if (adptArray->arr[i])
